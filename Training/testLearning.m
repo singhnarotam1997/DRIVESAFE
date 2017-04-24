@@ -1,17 +1,19 @@
 function [ pre ] = testLearning(num_labels,Theta1,Theta2,IN )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-    X=zeros(0,10000);
+    X=zeros(0,720);
     Input=fopen(IN,'r');
-    Data=zeros(10000);
+    Data=zeros(720);
     while ~feof(Input)
         in=fgetl(Input);
  %       disp(in);
 %        pause;
         Img=imread(strcat('Images/test/',in));
   %      imshow(Img);
-        D=ImgCompress(sum(Img,3)/3,50,50);
-        Data(1:2500)=reshape(double(D),1,[]);
+%        D=ImgCompress(sum(Img,3)/3,100,100);
+    [m,n,c]=size(Img);
+    Data=extractHOGFeatures(Img,'cellsize',int32([m/6 n/6]));
+        %Data(1:2500)=reshape(double(D),1,[]);
         X=[X;Data];
     end
     disp(size(X));
