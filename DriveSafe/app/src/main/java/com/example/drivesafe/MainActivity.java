@@ -1,7 +1,9 @@
 package com.example.drivesafe;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -17,10 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,11 +30,14 @@ import static java.lang.Thread.sleep;
 public class MainActivity extends AppCompatActivity {
     public static final int MEDIA_TYPE_IMAGE = 1;
     private Camera mCamera;
+    Activity current=this;
     Context context=this;
+    private static final int camera_req=1;
     private CameraView mCameraView;
     predict obj;
     Context cont;
     Intent tt;
+    boolean status=false;
     LinearLayout preview;
     private int mInterval = 1000; // 1 seconds by default, can be changed later
     private Handler mHandler;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mCamera.setDisplayOrientation(90);
         Camera.Parameters params = mCamera.getParameters();
         List sizes = params.getSupportedPictureSizes();
-        params.setPictureSize(480,640);
+        params.setPictureSize(640,480);
         //params.setPreviewSize(480,320);
         params.setRotation(270);
         params.setColorEffect(Camera.Parameters.EFFECT_MONO);
@@ -84,8 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        startRepeatingTask();
+                        if(!status) {
+                            startRepeatingTask();
+                            status=true;
+                        }
                     }
                 }
         );
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         pau.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                status=false;
                 stopRepeatingTask();
             }
         });
@@ -101,7 +105,10 @@ public class MainActivity extends AppCompatActivity {
         res.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRepeatingTask();
+                if(!status) {
+                    startRepeatingTask();
+                    status = true;
+                }
             }
         });
 
