@@ -1,16 +1,24 @@
 package com.example.drivesafe;
 
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
-
 public class Main2Activity extends AppCompatActivity {
     Intent i;
+    Activity current=this;
+    private static final int camera_req=1;
         /*super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Thread t=new Thread(){
@@ -36,12 +44,58 @@ public class Main2Activity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
+            if (ContextCompat.checkSelfPermission(current,Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
 
-            //Initialize a LoadViewTask object and call the execute() method
-            new LoadViewTask().execute();
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(current,Manifest.permission.CAMERA)) {
+                        Log.d("Permission_Granted","Inside if");
+                    ActivityCompat.requestPermissions(current,new String[]{Manifest.permission.CAMERA},camera_req);
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+
+                } else {
+                    Log.d("Permission_Granted","Inside else");
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(current,new String[]{Manifest.permission.CAMERA},camera_req);
+                }
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                //
+                }
+            Log.d("Permission_Granted"," "+ContextCompat.checkSelfPermission(current,Manifest.permission.CAMERA));
+            if (ContextCompat.checkSelfPermission(current,Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permission_Granted","True Rechecked");
+                new LoadViewTask().execute();
+            }
 
         }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case camera_req: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Permission_Granted","True");
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    new LoadViewTask().execute();
 
+                } else {
+                    Log.d("Permission_Granted","False");
+                    finish();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
         //To use the AsyncTask, it must be subclassed
         public class LoadViewTask extends AsyncTask<Void, Integer, Void>
         {
@@ -78,6 +132,7 @@ public class Main2Activity extends AppCompatActivity {
              * is where the code that is going to be executed on a background
              * thread must be placed.
              */
+
                 Log.d("Looping","Loading..");
                 predict.AddFile(getApplicationContext(),this);
                     i = new Intent(getApplicationContext(),MainActivity.class);

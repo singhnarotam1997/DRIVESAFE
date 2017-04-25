@@ -39,7 +39,7 @@
         android:layout_toLeftOf="@+id/Pause"
         android:layout_toStartOf="@+id/Pause"
         android:onClick="hello"
-        android:text="Capture" />
+        android:text="Start" />
 
     <TableLayout
         android:id="@+id/lay"
