@@ -1,6 +1,6 @@
 DriveSafe
-An adnroid application that alerts a distructed driver.
+An android application that alerts a distracted driver.
 
 It has two subparts.
 1. Classification using machine learning.
-2. Put this data with Android app.
+2. Utilizing this data within an Android app.
